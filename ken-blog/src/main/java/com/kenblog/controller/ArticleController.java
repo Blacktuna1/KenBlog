@@ -14,7 +14,7 @@ public class ArticleController {
     @Autowired
     public ArticleService articleService;
 
-    @GetMapping("/hotArticlelist")
+    @GetMapping("/hotArticleList")
     public ResponseResult hotArticlelist(){
         ResponseResult result = articleService.hotArticlelist();
         return result;
