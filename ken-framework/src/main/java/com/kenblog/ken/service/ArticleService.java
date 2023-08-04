@@ -1,7 +1,7 @@
 package com.kenblog.ken.service;
 
 import com.kenblog.ken.config.ResponseResult;
-import com.kenblog.ken.domain.Article;
+import com.kenblog.ken.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -12,4 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ArticleService extends IService<Article> {
 
     ResponseResult hotArticlelist();
+
+    ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
 }

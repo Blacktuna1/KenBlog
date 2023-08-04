@@ -1,7 +1,5 @@
 package com.kenblog.ken.utils;
 
-import com.kenblog.ken.domain.Article;
-import com.kenblog.ken.domain.vo.HotArticleVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;

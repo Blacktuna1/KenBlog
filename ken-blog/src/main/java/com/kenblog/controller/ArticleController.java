@@ -20,4 +20,8 @@ public class ArticleController {
         return result;
     }
 
+    @GetMapping("/articleList")
+    public ResponseResult articleList(Integer pageNum,Integer pageSize,Long categoryId){
+        return articleService.articleList(pageNum,pageSize,categoryId);
+    }
 }

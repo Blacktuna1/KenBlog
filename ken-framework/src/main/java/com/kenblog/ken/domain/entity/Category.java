@@ -1,4 +1,4 @@
-package com.kenblog.ken.domain;
+package com.kenblog.ken.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
