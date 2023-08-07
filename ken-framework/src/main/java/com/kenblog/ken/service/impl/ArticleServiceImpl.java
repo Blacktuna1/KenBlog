@@ -6,16 +6,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.constants.SystemConstants;
 import com.kenblog.ken.domain.entity.Article;
+import com.kenblog.ken.domain.entity.Category;
+import com.kenblog.ken.domain.vo.ArticleDetailVO;
 import com.kenblog.ken.domain.vo.ArticleListVo;
 import com.kenblog.ken.domain.vo.HotArticleVo;
 import com.kenblog.ken.domain.vo.PageVo;
 import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.mapper.ArticleMapper;
+import com.kenblog.ken.service.CategoryService;
 import com.kenblog.ken.utils.BeanCopyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
 * @author 1037859047
@@ -25,7 +30,8 @@ import java.util.Objects;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
-
+    @Autowired
+    CategoryService categoryService;
     @Override
     public ResponseResult hotArticlelist() {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
@@ -52,6 +58,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
+        //首先，参数中分为带分类id和不带分类id的，
         //查询条件
         LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         //如果 有categoryId 就要 查询时 要和传入的相同
@@ -65,10 +72,37 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         page(page,lambdaQueryWrapper);
 
         //封装查询结果成vo
+        List<Article> articles = page.getRecords();
+
+        articles.stream()
+                .map(article -> article.setCategoryName(categoryService.getById(article.getCategoryId()).getName()))
+                .collect(Collectors.toList());
+//        for (Article article : articles) {
+//            Category category = categoryService.getById(article.getCategoryId());
+//            article.setCategoryName(category.getName());
+//        }
+
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
 
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        //根据id查询文章
+        Article article = getById(id);
+        //转换成Vo
+        ArticleDetailVO articleDetailVO = BeanCopyUtils.copyBean(article, ArticleDetailVO.class);
+
+        //根据分类id查询分类名
+        Long categoryId = articleDetailVO.getCategoryId();
+        Category category = categoryService.getById(categoryService.getById(categoryId));
+        if (category!=null){
+            articleDetailVO.setCategoryName(category.getName());
+        }
+        //封装响应返回
+        return ResponseResult.okResult(articleDetailVO);
     }
 }
 

@@ -1,6 +1,5 @@
 package com.kenblog.ken.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-
-public class ArticleListVo {
+public class ArticleDetailVO {
     private Long id;
 
     /**
@@ -26,15 +24,16 @@ public class ArticleListVo {
      */
     private String summary;
 
+    private Long categoryId;
+
+    private String content;
+
     /**
      * 所属分类id
      */
     private String categoryName;
 
-    /**
-     * 缩略图
-     */
-    private String thumbnail;
+    private String isComment;
 
     /**
      * 访问量
@@ -45,5 +44,4 @@ public class ArticleListVo {
      *
      */
     private Date createTime;
-
 }
