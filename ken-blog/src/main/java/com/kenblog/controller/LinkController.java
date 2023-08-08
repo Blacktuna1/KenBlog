@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/link")
 public class LinkController {
     @Autowired
-    LinkService linkService;
+    private LinkService linkService;
 
     @GetMapping("/getAllLink")
     public ResponseResult<String> getAllLinks(){
-
+        return linkService.getAllLink();
     }
 
 
