@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -38,27 +39,30 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         //解析获取userid
         Claims claims = null;
-        try{
-            // 解析token
+        try {
             claims = JwtUtil.parseJWT(token);
         } catch (Exception e) {
             e.printStackTrace();
-            //两种出错类型，token超时
-                //token非法
-                //响应告诉前端要重新登录
+            //token超时  token非法
+            //响应告诉前端需要重新登录
             ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
             WebUtils.renderString(response, JSON.toJSONString(result));
             return;
         }
+        String userId = claims.getSubject();
         //从redis中获取用户信息
-        String userid = claims.getSubject();
-        LoginUser loginUser = redisCache.getCacheObject("bloglogin" + userid);
-
+        LoginUser loginUser = redisCache.getCacheObject("bloglogin:" + userId);
+        //如果获取不到
+        if(Objects.isNull(loginUser)){
+            //说明登录过期  提示重新登录
+            ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+            WebUtils.renderString(response, JSON.toJSONString(result));
+            return;
+        }
         //存入SecurityContextHolder
-        UsernamePasswordAuthenticationToken authenticationToken = new
-                UsernamePasswordAuthenticationToken(loginUser,null,null);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser,null,null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
