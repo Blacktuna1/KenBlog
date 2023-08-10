@@ -10,7 +10,6 @@ import com.kenblog.ken.utils.BeanCopyUtils;
 import com.kenblog.ken.utils.JwtUtil;
 import com.kenblog.ken.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
