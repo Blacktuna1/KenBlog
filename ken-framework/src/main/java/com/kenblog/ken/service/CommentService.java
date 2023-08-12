@@ -1,5 +1,6 @@
 package com.kenblog.ken.service;
 
+import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CommentService extends IService<Comment> {
 
+    ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize);
+
+    ResponseResult addComment(Comment comment);
 }
