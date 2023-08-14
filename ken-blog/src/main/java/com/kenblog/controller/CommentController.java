@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     @Autowired
     private CommentService commentService;
-
     @RequestMapping("/commentList")
     public ResponseResult commentList(Long articleId,Integer pageSize,Integer pageNum){
         return commentService.commentList(SystemConstants.ARTICLE_COMMENT,articleId,pageNum,pageSize);
@@ -23,7 +22,7 @@ public class CommentController {
         return commentService.commentList(SystemConstants.LINK_COMMENT,null,pageNum,pageSize);
     }
 
-    @PostMapping("/addComment")
+    @PostMapping
     public ResponseResult addComment(@RequestBody Comment comment){
         return commentService.addComment(comment);
     }

@@ -4,10 +4,12 @@ package com.kenblog.ken.handler.mybatisplus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.kenblog.ken.utils.SecurityUtils;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 //mybatis的字段自动填充
+@Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
     // 插入更新，更新几个创建时间和更新时间，还有创建人
     // 获取当前登录id，然后填充到评论字段

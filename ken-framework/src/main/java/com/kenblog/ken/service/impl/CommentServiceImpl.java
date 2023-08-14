@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,14 +29,12 @@ import java.util.List;
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     implements CommentService{
-    @Autowired
+    @Resource
     private UserService userService;
 
     @Override
     public ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize) {
         //增加一个判断文章类型
-
-
         // 查询特定文章的根评论
         // 文章id匹配，根评论字段匹配
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
