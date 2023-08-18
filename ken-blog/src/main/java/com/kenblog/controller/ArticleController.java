@@ -1,15 +1,16 @@
 package com.kenblog.controller;
 
+import com.kenblog.ken.annotation.SystemLog;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.service.ArticleService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/article")
+@Api(tags = "文章",description = "文章相关接口")
+
 public class ArticleController {
 
     @Autowired
@@ -29,5 +30,11 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseResult getArticleDetail(@PathVariable("id") Long id){
         return articleService.getArticleDetail(id);
+    }
+
+    @PutMapping("updateViewCount/{id}")
+    @SystemLog(businessName = "更新文章浏览量")
+    public ResponseResult updateViewCount(@PathVariable("id") Long id){
+        return articleService.updateViewCount(id);
     }
 }

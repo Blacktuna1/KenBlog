@@ -1,24 +1,21 @@
 package com.kenblog.controller;
 
+
 import com.kenblog.ken.config.ResponseResult;
-import com.kenblog.ken.service.LinkService;
-import io.swagger.annotations.Api;
+import com.kenblog.ken.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/link")
-@Api(tags = "友联",description = "友联相关接口")
-public class LinkController {
+@RequestMapping("/content/tag")
+public class TagController {
     @Autowired
-    private LinkService linkService;
+    private TagService tagService;
 
-    @GetMapping("/getAllLink")
-    public ResponseResult<String> getAllLinks(){
-        return linkService.getAllLink();
+    @GetMapping("/list")
+    public ResponseResult list() {
+        return ResponseResult.okResult(tagService.list());
     }
-
-
 }

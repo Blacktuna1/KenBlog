@@ -15,6 +15,7 @@ import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.mapper.ArticleMapper;
 import com.kenblog.ken.service.CategoryService;
 import com.kenblog.ken.utils.BeanCopyUtils;
+import com.kenblog.ken.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    RedisCache redisCache;
     @Override
     public ResponseResult hotArticlelist() {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
@@ -103,6 +107,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         //封装响应返回
         return ResponseResult.okResult(articleDetailVO);
+    }
+
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+        return ResponseResult.okResult();
     }
 }
 

@@ -21,6 +21,10 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class Article implements Serializable {
+    public Article(Long id, long viewCount) {
+        this.id = id;
+        this.viewCount = viewCount;
+    }
     /**
      * 
      */

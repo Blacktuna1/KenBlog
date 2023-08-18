@@ -5,6 +5,7 @@ import com.kenblog.ken.domain.entity.User;
 import com.kenblog.ken.enums.AppHttpCodeEnum;
 import com.kenblog.ken.exception.SystemException;
 import com.kenblog.ken.service.BlogLoginService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Api(tags = "登录",description = "登录相关接口")
+
 public class BlogLoginController {
     @Autowired
     private BlogLoginService bloggerService;

@@ -78,6 +78,8 @@ public class RedisCache
         return operation.get(key);
     }
 
+
+
     /**
      * 删除单个对象
      *
@@ -234,5 +236,10 @@ public class RedisCache
     public Collection<String> keys(final String pattern)
     {
         return redisTemplate.keys(pattern);
+    }
+
+    public void incrementCacheMapValue(String s, String toString, int i) {
+        redisTemplate.boundHashOps(s).increment(toString, i);
+
     }
 }
