@@ -1,7 +1,12 @@
 package com.kenblog.ken.service;
 
+import com.kenblog.ken.config.ResponseResult;
+import com.kenblog.ken.domain.dto.TagListDto;
 import com.kenblog.ken.domain.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kenblog.ken.domain.vo.PageVo;
+
+import java.util.List;
 
 /**
 * @author 1037859047
@@ -10,4 +15,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface TagService extends IService<Tag> {
 
+    ResponseResult<PageVo> pageTagList(Integer pageNum, Integer pageSize, TagListDto tagListDto);
+
+    ResponseResult addTag(Tag tag);
+
+    ResponseResult deleteTag(Long id);
+
+    ResponseResult getTag(Long id);
+
+    ResponseResult updateTag(Tag tag);
+
+    ResponseResult listAllTag();
 }

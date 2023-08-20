@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.constants.SystemConstants;
+import com.kenblog.ken.domain.dto.AddArticleDto;
 import com.kenblog.ken.domain.entity.Article;
+import com.kenblog.ken.domain.entity.ArticleTag;
 import com.kenblog.ken.domain.entity.Category;
 import com.kenblog.ken.domain.vo.ArticleDetailVO;
 import com.kenblog.ken.domain.vo.ArticleListVo;
@@ -13,6 +15,7 @@ import com.kenblog.ken.domain.vo.HotArticleVo;
 import com.kenblog.ken.domain.vo.PageVo;
 import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.mapper.ArticleMapper;
+import com.kenblog.ken.service.ArticleTagService;
 import com.kenblog.ken.service.CategoryService;
 import com.kenblog.ken.utils.BeanCopyUtils;
 import com.kenblog.ken.utils.RedisCache;
@@ -33,6 +36,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    ArticleTagService articleTagService;
 
     @Autowired
     RedisCache redisCache;
@@ -114,6 +120,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult add(AddArticleDto articleDto) {
+        // 对于博客的添加，不仅要添加博文内容，还要添加博客对应的标签
+        Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+        save(article);
+
+        //根据文章的id和tap更新article_tap表
+        List<ArticleTag> articleTags = articleDto.getTags().stream()
+                .map(tagId -> new ArticleTag(article.getId(),tagId))
+                .collect(Collectors.toList());
+
+        //添加 博客和标签的关联
+        articleTagService.saveBatch(articleTags);
+        return ResponseResult.okResult();    }
 }
 
 

@@ -7,6 +7,7 @@ import com.kenblog.ken.constants.SystemConstants;
 import com.kenblog.ken.domain.entity.Article;
 import com.kenblog.ken.domain.entity.Category;
 import com.kenblog.ken.domain.vo.CategoryVo;
+import com.kenblog.ken.domain.vo.CategoryVoAdmin;
 import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.service.CategoryService;
 import com.kenblog.ken.mapper.CategoryMapper;
@@ -53,6 +54,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
 
 
         return ResponseResult.okResult(categoryVos);
+    }
+
+    @Override
+    public ResponseResult getCategoryListAdmin() {
+        //查询文章表，状态为已发布
+        //获取特定status的article实体类
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Category::getStatus,SystemConstants.STATUS_NORMAL);
+        List<Category> list = list(queryWrapper);
+        //封装vo
+        List<CategoryVoAdmin> CategoryVoAdmin = BeanCopyUtils.copyBeanList(list, CategoryVoAdmin.class);
+
+
+        return ResponseResult.okResult(CategoryVoAdmin);
     }
 }
 

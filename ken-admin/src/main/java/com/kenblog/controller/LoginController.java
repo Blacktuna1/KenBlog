@@ -2,8 +2,10 @@ package com.kenblog.controller;
 
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.LoginUser;
+import com.kenblog.ken.domain.entity.Menu;
 import com.kenblog.ken.domain.entity.User;
 import com.kenblog.ken.domain.vo.AdminUserInfoVo;
+import com.kenblog.ken.domain.vo.RoutersVo;
 import com.kenblog.ken.domain.vo.UserInfoVo;
 import com.kenblog.ken.enums.AppHttpCodeEnum;
 import com.kenblog.ken.exception.SystemException;
@@ -30,7 +32,7 @@ public class LoginController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/user/login")
+    @PostMapping("/user/login")
     public ResponseResult login(@RequestBody User user){
         if (!StringUtils.hasText(user.getUserName())) {
             throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
@@ -52,8 +54,24 @@ public class LoginController {
         User user = loginUser.getUser();
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
 
+        /*
+            这个vo分权限、角色和用户信息
+         */
         AdminUserInfoVo adminUserInfoVo = new AdminUserInfoVo(perms, roleKeyList, userInfoVo);
         return ResponseResult.okResult(adminUserInfoVo);
+    }
+    @GetMapping("getRouters")
+    public ResponseResult<RoutersVo> getRouters(){
+        //通过Security获取UserId
+        Long userId = SecurityUtils.getUserId();
+        List<Menu> menus = menuService.selectRouterMenuTreeByUserId(userId);
+        return ResponseResult.okResult(new RoutersVo(menus));
+    }
+
+    @PostMapping("/user/logout")
+    public ResponseResult logout(){
+        bloggerService.logout();
+        return ResponseResult.okResult();
     }
 
 //    @PostMapping("/logout")

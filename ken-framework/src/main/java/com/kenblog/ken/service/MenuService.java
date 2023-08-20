@@ -4,6 +4,7 @@ import com.kenblog.ken.domain.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.TreeMap;
 
 /**
 * @author 1037859047
@@ -13,4 +14,6 @@ import java.util.List;
 public interface MenuService extends IService<Menu> {
 
     List<String> selectPermsByUserId(Long id);
+
+    List<Menu> selectRouterMenuTreeByUserId(Long userId);
 }

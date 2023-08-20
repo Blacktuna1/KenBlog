@@ -9,6 +9,7 @@ import com.kenblog.ken.service.SystemLoginService;
 import com.kenblog.ken.utils.BeanCopyUtils;
 import com.kenblog.ken.utils.JwtUtil;
 import com.kenblog.ken.utils.RedisCache;
+import com.kenblog.ken.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,10 +54,7 @@ public class SystemLoginServiceImpl implements SystemLoginService {
     @Override
     public ResponseResult logout() {
         //获取token 解析获取userid
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        //获取userid
-        Long userId = loginUser.getUser().getId();
+        Long userId = SecurityUtils.getUserId();
         //删除redis中的用户信息
         redisCache.deleteObject("Login:"+userId);
         return ResponseResult.okResult();

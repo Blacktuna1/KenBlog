@@ -6,6 +6,7 @@ import com.kenblog.ken.service.RoleService;
 import com.kenblog.ken.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,14 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
 
     @Override
     public List<String> selectRoleKeyByUserId(Long id) {
-        return null;
+        // 如果是管理员，就只返回admin
+        // 如果不是管理员，则查询其拥有的权限
+        if (id == 1L){
+            List<String> roleKeys = new ArrayList<>();
+            roleKeys.add("admin");
+            return roleKeys;
+        }
+        return getBaseMapper().selectRoleKeyByUserId(id);
     }
 }
 

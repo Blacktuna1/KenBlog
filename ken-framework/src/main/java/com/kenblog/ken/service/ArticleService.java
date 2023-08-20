@@ -1,6 +1,7 @@
 package com.kenblog.ken.service;
 
 import com.kenblog.ken.config.ResponseResult;
+import com.kenblog.ken.domain.dto.AddArticleDto;
 import com.kenblog.ken.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,4 +19,6 @@ public interface ArticleService extends IService<Article> {
     ResponseResult getArticleDetail(Long id);
 
     ResponseResult updateViewCount(Long id);
+
+    ResponseResult add(AddArticleDto article);
 }
