@@ -1,6 +1,7 @@
 package com.kenblog.ken.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.config.ResponseResult;
@@ -13,6 +14,7 @@ import com.kenblog.ken.domain.vo.ArticleDetailVO;
 import com.kenblog.ken.domain.vo.ArticleListVo;
 import com.kenblog.ken.domain.vo.HotArticleVo;
 import com.kenblog.ken.domain.vo.PageVo;
+import com.kenblog.ken.enums.AppHttpCodeEnum;
 import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.mapper.ArticleMapper;
 import com.kenblog.ken.service.ArticleTagService;
@@ -21,7 +23,9 @@ import com.kenblog.ken.utils.BeanCopyUtils;
 import com.kenblog.ken.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,6 +43,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Autowired
     ArticleTagService articleTagService;
+
+    @Resource
+    ArticleMapper articleMapper;
 
     @Autowired
     RedisCache redisCache;
@@ -134,7 +141,28 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         //添加 博客和标签的关联
         articleTagService.saveBatch(articleTags);
-        return ResponseResult.okResult();    }
+        return ResponseResult.okResult();
+    }
+    @Override
+    public ResponseResult getArticleListByTitleSummary(Integer pageNum, Integer pageSize, String title, String summary) {
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        if (StringUtils.hasText(title)) {
+            lambdaQueryWrapper.like(Article::getTitle, title);
+        }
+
+        if (StringUtils.hasText(summary)) {
+            lambdaQueryWrapper.like(Article::getSummary, summary);
+        }
+
+        lambdaQueryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
+
+        Page<Article> page = new Page<>(pageNum, pageSize);
+        IPage<Article> articlePage = articleMapper.selectPage(page, lambdaQueryWrapper);
+
+        PageVo pageVo = new PageVo(articlePage.getRecords(), articlePage.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
 }
 
 

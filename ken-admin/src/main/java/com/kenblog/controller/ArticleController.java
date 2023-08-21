@@ -19,4 +19,9 @@ public class ArticleController {
     public ResponseResult add(@RequestBody AddArticleDto article){
         return articleService.add(article);
     }
+
+    @GetMapping("list")
+    public ResponseResult list(Integer pageNum,Integer pageSize,String title,String summary){
+        return articleService.getArticleListByTitleSummary(pageNum,pageSize,title,summary);
+    }
 }
