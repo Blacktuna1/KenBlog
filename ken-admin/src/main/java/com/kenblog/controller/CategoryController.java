@@ -15,8 +15,10 @@ public class CategoryController {
     @Resource
     CategoryService categoryService;
 
-    @GetMapping("/listAllCategory")
+    @GetMapping("listAllCategory")
     public ResponseResult listAllCategory(){
         return categoryService.getCategoryListAdmin();
     }
+
+    @GetMapping("export")
 }
