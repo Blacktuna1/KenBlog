@@ -3,6 +3,7 @@ package com.kenblog.ken.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kenblog.ken.annotation.SystemLog;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Role;
 import com.kenblog.ken.domain.vo.PageVo;
@@ -36,19 +37,28 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     }
 
     @Override
+    @SystemLog(businessName = "查询角色接口")
     public ResponseResult getByRoleName(Integer pageNum, Integer pageSize, String roleName, String status) {
-        // 查询
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StringUtils.hasText(roleName),Role::getRoleName,roleName);
-        wrapper.eq(StringUtils.hasText(status),Role::getStatus,status);
 
-        //分页
-        Page<Role> page = new Page<>(pageSize,pageNum);
-        page(page,wrapper);
-        PageVo pageVo = new PageVo(page.getRecords(),page.getTotal());
+        // 添加角色名和状态的条件查询
+        if (StringUtils.hasText(roleName)) {
+            wrapper.eq(Role::getRoleName, roleName);
+        }
+        if (StringUtils.hasText(status)) {
+            wrapper.eq(Role::getStatus, status);
+        }
+
+        // 分页查询
+        Page<Role> page = new Page<>(pageNum, pageSize);
+        Page<Role> rolePage = page(page, wrapper);
+
+        // 构建分页结果对象
+        PageVo pageVo = new PageVo(rolePage.getRecords(), rolePage.getTotal());
 
         return ResponseResult.okResult(pageVo);
     }
+
 }
 
 
