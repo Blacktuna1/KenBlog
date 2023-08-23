@@ -1,5 +1,6 @@
 package com.kenblog.ken.service;
 
+import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Menu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -16,4 +17,12 @@ public interface MenuService extends IService<Menu> {
     List<String> selectPermsByUserId(Long id);
 
     List<Menu> selectRouterMenuTreeByUserId(Long userId);
+
+    ResponseResult getByMenuName(String status, String menuName);
+
+    ResponseResult add(Menu menu);
+
+    ResponseResult updateMenu(Menu menu);
+
+    ResponseResult deleteMenu(Long menuId);
 }

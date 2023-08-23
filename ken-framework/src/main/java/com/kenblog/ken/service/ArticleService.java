@@ -4,6 +4,7 @@ import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.dto.AddArticleDto;
 import com.kenblog.ken.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kenblog.ken.domain.vo.ArticleVo;
 
 /**
 * @author 1037859047
@@ -18,9 +19,15 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult getArticleDetail(Long id);
 
+    ResponseResult getArticleDetailAdmin(Long id);
+
     ResponseResult updateViewCount(Long id);
 
     ResponseResult add(AddArticleDto article);
 
     ResponseResult getArticleListByTitleSummary(Integer pageNum, Integer pageSize, String title, String summary);
+
+    ResponseResult updateArticle(AddArticleDto addArticleDto);
+
+    ResponseResult deleteArticleById(Long id);
 }

@@ -18,7 +18,11 @@ public enum AppHttpCodeEnum {
     PASSWORD_NOT_NULL(509 ,"密码不能为空" ),
     EMAIL_NOT_NULL(509,"邮箱不能为空" ),
     NICKNAME_NOT_NULL(510,"昵称不能为空" ),
-    NOT_NULL(511,"不能为空");
+    NOT_NULL(511,"不能为空"),
+    SAVE_ERROR(512,"保存出错辣"),
+    UPDATE_ERROR(513,"修改菜单'写博文'失败，上级菜单不能选择自己"),
+    DELETE_ERROR(514,"存在子菜单不允许删除");
+
     int code;
     String msg;
 

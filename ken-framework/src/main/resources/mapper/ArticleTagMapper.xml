@@ -12,4 +12,14 @@
     <sql id="Base_Column_List">
         article_id,tag_id
     </sql>
+    <delete id="deleteByArticleId">
+        DELETE FROM sg_article_tag
+        WHERE article_id = #{id}
+    </delete>
+
+    <select id="getTagsByArticleId" resultType="Long">
+        SELECT tag_id
+        FROM sg_article_tag
+        WHERE article_id = #{articleId}
+    </select>
 </mapper>

@@ -2,12 +2,16 @@ package com.kenblog.ken.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.constants.SystemConstants;
 import com.kenblog.ken.domain.entity.Menu;
+import com.kenblog.ken.enums.AppHttpCodeEnum;
 import com.kenblog.ken.service.MenuService;
 import com.kenblog.ken.mapper.MenuMapper;
 import com.kenblog.ken.utils.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     implements MenuService{
+    @Autowired
+    MenuMapper menuMapper;
 
     @Override
     // 通过id查询用户权限
@@ -56,6 +62,58 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         //先找出第一层的菜单  然后去找他们的子菜单设置到children属性中
         List<Menu> menuTree = builderMenuTree(menus,0L);
         return menuTree;
+    }
+
+    @Override
+    public ResponseResult getByMenuName(String status, String menuName) {
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        if (!StringUtils.hasText(status)&&!StringUtils.hasText(menuName)){
+            return ResponseResult.okResult(list());
+        }
+        else if (!StringUtils.hasText(menuName)){
+            wrapper.eq(Menu::getStatus, status);
+            return ResponseResult.okResult(list(wrapper));
+        }
+        else {
+            wrapper.eq(Menu::getStatus, status);
+            wrapper.eq(Menu::getMenuName, menuName);
+            return ResponseResult.okResult(list(wrapper));
+        }
+    }
+
+    @Override
+    public ResponseResult add(Menu menu) {
+        try{
+            save(menu);
+            return ResponseResult.okResult();
+        } catch (Exception e) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SAVE_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult updateMenu(Menu menu) {
+        if (menu.getParentId().equals(menu.getId())){
+            return ResponseResult.errorResult(AppHttpCodeEnum.UPDATE_ERROR);
+        }
+        updateById(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteMenu(Long menuId) {
+        // 如果有子菜单，不能删除
+            //具体是查询表里的parentsId是否有等于menuId
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Menu::getParentId,menuId);
+        queryWrapper.eq(Menu::getStatus,SystemConstants.STATUS_NORMAL);
+        List<Menu> list = list(queryWrapper);
+        if (list!=null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
+        }
+        menuMapper.deleteById(menuId);
+        return ResponseResult.okResult();
+        // 否则，根据id删除
     }
 
     private List<Menu> builderMenuTree(List<Menu> menus, Long parentId) {
