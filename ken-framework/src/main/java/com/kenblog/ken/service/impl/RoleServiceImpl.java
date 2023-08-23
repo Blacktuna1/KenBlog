@@ -17,6 +17,7 @@ import com.kenblog.ken.mapper.RoleMapper;
 import com.kenblog.ken.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -85,16 +86,19 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     }
 
     @Override
+    @Transactional
     public ResponseResult addRole(RoleVo roleVo) {
         // 添加新角色
         Role role = BeanCopyUtils.copyBean(roleVo, Role.class);
         save(role);
         // 添加角色对应的菜单
+        Long roleId = role.getId();
         List<Long> menuIds = roleVo.getMenuIds();
         List<RoleMenu> roleMenu = menuIds.stream()
-                .map(menu -> new RoleMenu(role.getId(), menu))
+                .map(menu -> new RoleMenu(roleId, menu))
                 .collect(Collectors.toList());
         roleMenuService.saveBatch(roleMenu);
+        return ResponseResult.okResult();
     }
 
 }

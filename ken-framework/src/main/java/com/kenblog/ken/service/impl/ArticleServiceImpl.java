@@ -149,7 +149,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
         save(article);
 
-
         List<ArticleTag> articleTags = articleDto.getTags().stream()
                 .map(tagId -> new ArticleTag(article.getId(), tagId))
                 .collect(Collectors.toList());

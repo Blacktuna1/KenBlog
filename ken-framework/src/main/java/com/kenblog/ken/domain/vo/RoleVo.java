@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleVo {
 
     private String roleName;
@@ -25,7 +25,4 @@ public class RoleVo {
     private List<Long> menuIds;
 
     private String remark;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

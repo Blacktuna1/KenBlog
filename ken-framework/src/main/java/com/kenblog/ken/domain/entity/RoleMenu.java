@@ -23,7 +23,6 @@ public class RoleMenu implements Serializable {
     /**
      * 菜单ID
      */
-    @TableId
     private Long menuId;
 
     @TableField(exist = false)

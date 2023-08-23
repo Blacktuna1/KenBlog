@@ -23,8 +23,10 @@ public class RoleController {
     }
 
     @PostMapping
+    //这个接口写的不太好，id字段有点问题。
     public ResponseResult add(@RequestBody RoleVo roleVo){
         return roleService.addRole(roleVo);
     }
+
 
 }
