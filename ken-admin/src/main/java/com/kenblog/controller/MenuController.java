@@ -32,7 +32,7 @@ public class MenuController {
         return menuService.updateMenu(menu);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{menuId}")
     public ResponseResult delete(@PathVariable() Long menuId){
         return menuService.deleteMenu(menuId);
     }

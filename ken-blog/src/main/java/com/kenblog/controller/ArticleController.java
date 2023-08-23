@@ -3,6 +3,7 @@ package com.kenblog.controller;
 import com.kenblog.ken.annotation.SystemLog;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.service.ArticleService;
+import com.kenblog.ken.service.MenuService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,4 +38,6 @@ public class ArticleController {
     public ResponseResult updateViewCount(@PathVariable("id") Long id){
         return articleService.updateViewCount(id);
     }
+
+
 }

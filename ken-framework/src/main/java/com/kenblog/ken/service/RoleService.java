@@ -1,5 +1,6 @@
 package com.kenblog.ken.service;
 
+import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,6 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
 
     List<String> selectRoleKeyByUserId(Long id);
+
+    ResponseResult getByRoleName(Integer pageNum, Integer pageSize, String roleName, String status);
 }

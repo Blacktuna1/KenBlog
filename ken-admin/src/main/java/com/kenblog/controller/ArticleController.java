@@ -7,15 +7,20 @@ import com.kenblog.ken.domain.dto.AddArticleDto;
 import com.kenblog.ken.domain.entity.Article;
 import com.kenblog.ken.domain.vo.ArticleVo;
 import com.kenblog.ken.service.ArticleService;
+import com.kenblog.ken.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/content/article")
 public class ArticleController {
-    @Autowired
+    @Resource
     ArticleService articleService;
 
+    @Resource
+    public MenuService menuService;
     @PostMapping
     @SystemLog(businessName = "添加新博文")
     public ResponseResult add(@RequestBody AddArticleDto article){
@@ -41,4 +46,6 @@ public class ArticleController {
     public ResponseResult updateArticle(@RequestBody AddArticleDto addArticleDto){
         return articleService.updateArticle(addArticleDto);
     }
+
+
 }

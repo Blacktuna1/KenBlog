@@ -1,10 +1,15 @@
 package com.kenblog.ken.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Role;
+import com.kenblog.ken.domain.vo.PageVo;
 import com.kenblog.ken.service.RoleService;
 import com.kenblog.ken.mapper.RoleMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
             return roleKeys;
         }
         return getBaseMapper().selectRoleKeyByUserId(id);
+    }
+
+    @Override
+    public ResponseResult getByRoleName(Integer pageNum, Integer pageSize, String roleName, String status) {
+        // 查询
+        LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(StringUtils.hasText(roleName),Role::getRoleName,roleName);
+        wrapper.eq(StringUtils.hasText(status),Role::getStatus,status);
+
+        //分页
+        Page<Role> page = new Page<>(pageSize,pageNum);
+        page(page,wrapper);
+        PageVo pageVo = new PageVo(page.getRecords(),page.getTotal());
+
+        return ResponseResult.okResult(pageVo);
     }
 }
 

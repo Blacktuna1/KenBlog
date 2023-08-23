@@ -108,7 +108,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         queryWrapper.eq(Menu::getParentId,menuId);
         queryWrapper.eq(Menu::getStatus,SystemConstants.STATUS_NORMAL);
         List<Menu> list = list(queryWrapper);
-        if (list!=null){
+        if (!list.isEmpty()){
             return ResponseResult.errorResult(AppHttpCodeEnum.DELETE_ERROR);
         }
         menuMapper.deleteById(menuId);
