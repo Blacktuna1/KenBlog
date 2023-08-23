@@ -6,14 +6,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.annotation.SystemLog;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Role;
+import com.kenblog.ken.domain.entity.RoleMenu;
 import com.kenblog.ken.domain.vo.PageVo;
+import com.kenblog.ken.domain.vo.RoleStaVo;
+import com.kenblog.ken.domain.vo.RoleVo;
+import com.kenblog.ken.mapper.RoleMenuMapper;
+import com.kenblog.ken.service.RoleMenuService;
 import com.kenblog.ken.service.RoleService;
 import com.kenblog.ken.mapper.RoleMapper;
+import com.kenblog.ken.utils.BeanCopyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author 1037859047
@@ -24,6 +33,12 @@ import java.util.List;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     implements RoleService{
 
+    @Resource
+    RoleMapper roleMapper;
+    @Resource
+    RoleMenuMapper roleMenuMapper;
+    @Resource
+    RoleMenuService roleMenuService;
     @Override
     public List<String> selectRoleKeyByUserId(Long id) {
         // 如果是管理员，就只返回admin
@@ -57,6 +72,29 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         PageVo pageVo = new PageVo(rolePage.getRecords(), rolePage.getTotal());
 
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult changeStatus(RoleStaVo roleStaVo) {
+//        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Role::getId, roleStaVo.getRoleId());
+        Role role = getById(roleStaVo.getRoleId());
+        role.setStatus(roleStaVo.getStatus());
+        updateById(role);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult addRole(RoleVo roleVo) {
+        // 添加新角色
+        Role role = BeanCopyUtils.copyBean(roleVo, Role.class);
+        save(role);
+        // 添加角色对应的菜单
+        List<Long> menuIds = roleVo.getMenuIds();
+        List<RoleMenu> roleMenu = menuIds.stream()
+                .map(menu -> new RoleMenu(role.getId(), menu))
+                .collect(Collectors.toList());
+        roleMenuService.saveBatch(roleMenu);
     }
 
 }

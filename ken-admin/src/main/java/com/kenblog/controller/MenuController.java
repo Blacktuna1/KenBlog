@@ -2,15 +2,21 @@ package com.kenblog.controller;
 
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Menu;
+import com.kenblog.ken.mapper.MenuMapper;
 import com.kenblog.ken.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("system/menu")
 public class MenuController {
     @Autowired
     MenuService menuService;
+
+    @Resource
+    MenuMapper menuMapper;
 
     @GetMapping("/list")
     public ResponseResult list(String status ,String menuName) {
@@ -35,5 +41,9 @@ public class MenuController {
     @DeleteMapping("{menuId}")
     public ResponseResult delete(@PathVariable() Long menuId){
         return menuService.deleteMenu(menuId);
+    }
+    @GetMapping("treeselect")
+    public ResponseResult treeselect(){
+        return menuService.getMenuTreeList();
     }
 }

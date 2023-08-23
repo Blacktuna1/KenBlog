@@ -5,15 +5,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.constants.SystemConstants;
 import com.kenblog.ken.domain.entity.Menu;
+import com.kenblog.ken.domain.vo.MenuTreeVo;
 import com.kenblog.ken.enums.AppHttpCodeEnum;
 import com.kenblog.ken.service.MenuService;
 import com.kenblog.ken.mapper.MenuMapper;
+import com.kenblog.ken.utils.BeanCopyUtils;
 import com.kenblog.ken.utils.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     implements MenuService{
-    @Autowired
+    @Resource
     MenuMapper menuMapper;
 
     @Override
@@ -116,6 +121,43 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         // 否则，根据id删除
     }
 
+    @Override
+    public ResponseResult getMenuTreeList() {
+        MenuMapper menuMapper = getBaseMapper();
+        List<Menu> menus = menuMapper.selectAllRouterMenu();
+
+        List<MenuTreeVo> menuTreeVos = builderMenuTreeVo(menus, 0L);
+        return ResponseResult.okResult(menuTreeVos);
+    }
+    private List<MenuTreeVo> builderMenuTreeVo(List<Menu> menus, Long parentId) {
+
+        List<MenuTreeVo> MenuTreeVos = menus.stream()
+                .map(m -> new MenuTreeVo(null,m.getId(), m.getMenuName(), m.getParentId()))
+                .collect(Collectors.toList());
+
+        List<MenuTreeVo> options = MenuTreeVos.stream()
+                .filter(o -> o.getParentId().equals(0L))
+                .map(o -> o.setChildren(getChildListVo(MenuTreeVos, o)))
+                .collect(Collectors.toList());
+        return options;
+    }
+
+    private static List<MenuTreeVo> getChildListVo(List<MenuTreeVo> list, MenuTreeVo option) {
+        List<MenuTreeVo> options = list.stream()
+                .filter(o -> Objects.equals(o.getParentId(), option.getId()))
+                .map(o -> o.setChildren(getChildListVo(list, o)))
+                .collect(Collectors.toList());
+        return options;
+
+    }
+
+    /**
+     * 获取存入参数的 子Menu集合
+     * @param menu
+     * @param menus
+     * @return
+     */
+
     private List<Menu> builderMenuTree(List<Menu> menus, Long parentId) {
         List<Menu> menuTree = menus.stream()
                 .filter(menu -> menu.getParentId().equals(parentId))
@@ -123,7 +165,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
                 .collect(Collectors.toList());
         return menuTree;
     }
-
     /**
      * 获取存入参数的 子Menu集合
      * @param menu
@@ -137,6 +178,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
                 .collect(Collectors.toList());
         return childrenList;
     }
+
 
 
 }
