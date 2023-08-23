@@ -71,6 +71,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         save(user);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult getList(Integer pageNum, Integer pageSize, String userName, String phonenumber) {
+
+    }
 }
 
 

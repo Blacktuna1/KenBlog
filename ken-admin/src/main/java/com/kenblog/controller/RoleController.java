@@ -1,6 +1,7 @@
 package com.kenblog.controller;
 
 import com.kenblog.ken.config.ResponseResult;
+import com.kenblog.ken.domain.entity.Role;
 import com.kenblog.ken.domain.vo.RoleStaVo;
 import com.kenblog.ken.domain.vo.RoleVo;
 import com.kenblog.ken.service.RoleService;
@@ -24,9 +25,15 @@ public class RoleController {
 
     @PostMapping
     //这个接口写的不太好，id字段有点问题。
-    public ResponseResult add(@RequestBody RoleVo roleVo){
-        return roleService.addRole(roleVo);
+    public ResponseResult add(@RequestBody Role role){
+        return roleService.addRole(role);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseResult deleteById(@PathVariable Long id){
+        return roleService.deleteById(id);
+    }
+
 
 
 }

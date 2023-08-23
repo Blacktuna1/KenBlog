@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 角色和菜单关联表
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @TableName(value ="sys_role_menu")
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 public class RoleMenu implements Serializable {
     /**
      * 角色ID

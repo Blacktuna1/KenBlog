@@ -87,17 +87,25 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
 
     @Override
     @Transactional
-    public ResponseResult addRole(RoleVo roleVo) {
+    public ResponseResult addRole(Role role) {
         // 添加新角色
-        Role role = BeanCopyUtils.copyBean(roleVo, Role.class);
         save(role);
         // 添加角色对应的菜单
         Long roleId = role.getId();
-        List<Long> menuIds = roleVo.getMenuIds();
+        List<Long> menuIds = role.getMenuIds();
         List<RoleMenu> roleMenu = menuIds.stream()
                 .map(menu -> new RoleMenu(roleId, menu))
                 .collect(Collectors.toList());
         roleMenuService.saveBatch(roleMenu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteById(Long id) {
+        // 根据id删除角色
+        roleMapper.deleteById(id);
+        // 删除id对应的
+        roleMenuMapper.deleteById(id);
         return ResponseResult.okResult();
     }
 
