@@ -3,6 +3,7 @@ package com.kenblog.ken.service;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.domain.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kenblog.ken.domain.vo.CategoryVoFour;
 
 /**
 * @author 1037859047
@@ -14,4 +15,9 @@ public interface CategoryService extends IService<Category> {
     ResponseResult getCategoryList();
 
     ResponseResult getCategoryListAdmin();
+
+    ResponseResult getListByName(Integer pageNum, Integer pageSize, String name, String status);
+
+    ResponseResult getListById(Long id);
+
 }

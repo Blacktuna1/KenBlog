@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -14,7 +16,10 @@ import lombok.Data;
  */
 @TableName(value ="sys_user")
 @Data
-public class User implements Serializable {
+public class User{
+    @TableField(exist = false)
+    private Long[] roleIds;
+
     /**
      * 主键
      */

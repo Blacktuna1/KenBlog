@@ -2,6 +2,7 @@ package com.kenblog.runner;
 
 import com.kenblog.ken.domain.entity.Article;
 import com.kenblog.ken.mapper.ArticleMapper;
+import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +20,9 @@ public class ViewCountRunner implements CommandLineRunner {
     private ArticleMapper articleMapper;
 
     @Autowired
+    private ArticleService articleService;
+
+    @Autowired
     private RedisCache redisCache;
 
 
@@ -27,16 +31,15 @@ public class ViewCountRunner implements CommandLineRunner {
     // 更新浏览量
     @Override
     public void run(String... args) throws Exception {
-        List<Article> articles = articleMapper.selectList(null);
+        List<Article> articles = articleService.list();
         Map<String, Integer> viewCountMap = articles.stream()
                 .collect(
                         Collectors.toMap(
                                 article -> article.getId().toString(),
-                                article -> {return article.getViewCount().intValue();}
+                                article -> article.getViewCount().intValue()
                         )
                 );
         //更新到redis
         redisCache.setCacheMap("article:viewCount",viewCountMap);
-
     }
 }

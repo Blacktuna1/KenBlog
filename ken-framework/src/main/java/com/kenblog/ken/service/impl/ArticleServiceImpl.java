@@ -188,10 +188,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         lambdaQueryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
 
-        Page<Article> page = new Page<>(pageNum, pageSize);
-        IPage<Article> articlePage = articleMapper.selectPage(page, lambdaQueryWrapper);
-
-        PageVo pageVo = new PageVo(articlePage.getRecords(), articlePage.getTotal());
+        Page<Article> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(pageNum);
+        page(page, lambdaQueryWrapper);
+        List<Article> records = page.getRecords();
+        long total = page.getTotal();
+        PageVo pageVo = new PageVo(records, total);
         return ResponseResult.okResult(pageVo);
     }
 

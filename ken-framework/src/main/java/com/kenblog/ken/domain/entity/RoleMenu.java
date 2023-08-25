@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -14,13 +16,14 @@ import lombok.experimental.Accessors;
  */
 @TableName(value ="sys_role_menu")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
 public class RoleMenu implements Serializable {
     /**
      * 角色ID
      */
-    @TableId
+//    @TableId
     private Long roleId;
     /**
      * 菜单ID
@@ -29,11 +32,6 @@ public class RoleMenu implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
-    public RoleMenu(Long id, Long menuId) {
-        this.roleId = id;
-        this.menuId = menuId;
-    }
 
     @Override
     public boolean equals(Object that) {

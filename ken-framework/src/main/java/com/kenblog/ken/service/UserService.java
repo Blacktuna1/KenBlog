@@ -1,6 +1,8 @@
 package com.kenblog.ken.service;
 
 import com.kenblog.ken.config.ResponseResult;
+import com.kenblog.ken.domain.dto.UserDto;
+import com.kenblog.ken.domain.dto.UserUpdateDto;
 import com.kenblog.ken.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,5 +19,13 @@ public interface UserService extends IService<User> {
 
     ResponseResult register(User user);
 
-    ResponseResult getList(Integer pageNum, Integer pageSize, String userName, String phonenumber);
+    ResponseResult getList(Integer pageNum, Integer pageSize, String userName, String phonenumber ,String status);
+
+    ResponseResult addUser(UserDto userDto);
+
+    ResponseResult deleteById(Long id);
+
+    ResponseResult getUserDetails(Long id);
+
+    ResponseResult updateUserDetailsInfo(UserUpdateDto userUpdateDto);
 }

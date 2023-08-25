@@ -1,6 +1,7 @@
 package com.kenblog.ken.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kenblog.ken.config.ResponseResult;
 import com.kenblog.ken.constants.SystemConstants;
@@ -8,12 +9,15 @@ import com.kenblog.ken.domain.entity.Article;
 import com.kenblog.ken.domain.entity.Category;
 import com.kenblog.ken.domain.vo.CategoryVo;
 import com.kenblog.ken.domain.vo.CategoryVoAdmin;
+import com.kenblog.ken.domain.vo.CategoryVoFour;
+import com.kenblog.ken.domain.vo.PageVo;
 import com.kenblog.ken.service.ArticleService;
 import com.kenblog.ken.service.CategoryService;
 import com.kenblog.ken.mapper.CategoryMapper;
 import com.kenblog.ken.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -69,6 +73,39 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
 
         return ResponseResult.okResult(CategoryVoAdmin);
     }
+
+    @Override
+    public ResponseResult getListByName(Integer pageNum, Integer pageSize, String name, String status) {
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(name))
+            wrapper.like(Category::getName,name);
+        if (StringUtils.hasText(status))
+            wrapper.eq(Category::getStatus,status);
+        Page<Category> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(pageNum);
+        page(page,wrapper);
+        List<Category> records = page.getRecords();
+        List<CategoryVoFour> categoryVoFours = records.stream()
+                .map(record -> new CategoryVoFour(record.getDescription(), record.getId(), record.getName(), record.getStatus()))
+                .collect(Collectors.toList());
+        long total = page.getTotal();
+        PageVo pageVo = new PageVo(categoryVoFours, total);
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getListById(Long id) {
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getId,id);
+        List<Category> list = list(wrapper);
+        List<CategoryVoFour> categoryVoFours = list.stream()
+                .map(record -> new CategoryVoFour(record.getDescription(), record.getId(), record.getName(), record.getStatus()))
+                .collect(Collectors.toList());
+        return ResponseResult.okResult(categoryVoFours);
+    }
+
+
 }
 
 
